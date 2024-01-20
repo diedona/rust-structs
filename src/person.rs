@@ -6,16 +6,16 @@ use crate::country::Country;
 pub struct Person<'a> {
     first_name: Cell<&'a str>,
     last_name: Cell<&'a str>,
-    birth_year: u16,
-    country_origin: Country,
+    pub birth_year: u16,
+    pub country_origin: Country,
 }
 
 impl<'a> Person<'a> {
-    pub fn new(first_name: &'static str, last_name: &'static str) -> Person<'a> {
+    pub fn new(first_name: &'static str, last_name: &'static str, birth_year: u16) -> Person<'a> {
         return Person {
             first_name: Cell::from(first_name),
             last_name: Cell::from(last_name),
-            birth_year: 1989,
+            birth_year,
             country_origin: Country::Brazil,
         };
     }
@@ -31,5 +31,20 @@ impl<'a> Person<'a> {
 
         self.first_name.set(new_first_name);
         return Ok(());
+    }
+
+    pub fn greet_other_person(&self, other_person: &Person) -> Option<String> {
+        if other_person.birth_year == self.birth_year {
+            return Some("We were born in the same year!".to_string());
+        }
+
+        if self.birth_year < other_person.birth_year {
+            return Some(format!(
+                "Haha, I'm older than you, {}!",
+                other_person.get_first_name()
+            ));
+        }
+
+        return None;
     }
 }
